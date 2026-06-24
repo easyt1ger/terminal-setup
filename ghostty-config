@@ -1,0 +1,145 @@
+# Ghostty Configuration
+# ~/.config/ghostty/config
+
+# ==================== APPEARANCE ====================
+# Kanagawa Dragon theme
+background = 181819
+foreground = dcd7ba
+
+# Kanagawa Dragon Colors
+palette = 0=#0d0c0c
+palette = 1=#c34043
+palette = 2=#76946a
+palette = 3=#c0a36e
+palette = 4=#7e9cd8
+palette = 5=#938aa9
+palette = 6=#7fb4ca
+palette = 7=#c8c093
+palette = 8=#a6a69c
+palette = 9=#e82828
+palette = 10=#98bb6c
+palette = 11=#e6c384
+palette = 12=#7ea8fd
+palette = 13=#938aa9
+palette = 14=#7fb4ca
+palette = 15=#f2ccff
+
+# Cursor
+cursor-style = block
+cursor-style-blink = true
+cursor-opacity = 0.8
+
+# ==================== FONT ====================
+# Popular monospace fonts for Nvim
+# Try one of these:
+font-family = JetBrains Mono
+# font-family = Menlo
+# font-family = Monaco
+# font-family = Source Code Pro
+# font-family = FiraCode
+# font-family = Hack
+
+font-size = 12
+font-thicken = false
+letter-spacing = 0
+line-height = 1.2
+
+# ==================== WINDOW ====================
+# Window decorations
+window-decoration = false
+# window-decoration = client (use for macOS native decorations)
+
+# Padding
+padding = 8
+padding-x = 12
+padding-y = 8
+
+# Title bar
+macos-titlebar-style = transparent
+window-title-format = "{title}"
+
+# ==================== SHELL INTEGRATION ====================
+shell-integration = true
+shell-integration-features = cursor,errors,sudo,title,hostname
+
+# macOS specific
+# macos-option-as-alt = true
+# macos-non-ascii-allowed-in-title = true
+
+# ==================== BEHAVIOR ====================
+# Copy on select
+copy-on-select = true
+copy-on-select-exclude = ""
+
+# Scrollback
+scrollback-limit = 3000
+scrollback-multiplier = 3.0
+
+# Mouse
+mouse-hide-while-typing = true
+
+# Links
+link-url-style = underline
+
+# ==================== KEYBINDINGS ====================
+# Reload config without restarting
+# keybind = ctrl+shift+r=reload_config
+
+# Split panes (tmux style)
+keybind = ctrl+shift+d=new_split:right
+keybind = ctrl+shift+s=new_split:down
+
+# Create new tab
+keybind = ctrl+shift+t=new_tab
+
+# Navigate tabs
+keybind = ctrl+shift+]>next_tab
+keybind = ctrl+shift+[>previous_tab
+
+# Search
+# keybind = cmd+f=show_search
+
+# ==================== SYSTEM INTEGRATION ====================
+# Shell
+# macOS:
+# shell = /opt/homebrew/bin/fish
+
+# Linux (Arch, Debian, etc):
+shell = /usr/bin/fish
+
+# Working directory
+# Leave empty to use current directory
+
+# Environment variables
+env = TERM=ghostty
+
+# ==================== PERFORMANCE ====================
+# GPU acceleration
+# auto-update = check (or false to disable)
+graphics-protocol = kitty
+
+# Rendering
+command-palette-search-mode = fuzzy
+
+# ==================== MISC ====================
+# Confirm close with unsaved content
+confirm-close-surface = false
+
+# Tab title format
+tab-title-format = {title}
+
+# Automatic updates
+auto-update = ask
+# auto-update = off (if you prefer manual updates)
+
+# ==================== MACOS SPECIFIC ====================
+# macOS: Use system keyboard shortcuts
+macos-option-as-alt = false
+
+# macOS: Hide title bar in fullscreen
+# macos-titlebar-style = tabs
+
+# ==================== LINUX SPECIFIC ====================
+# GTK theme (if you have one set)
+# gtk-titlebar = true
+# gtk-single-instance = false
