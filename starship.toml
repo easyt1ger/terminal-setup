@@ -8,7 +8,8 @@ format = """
 [└─>](bold #7e9cd8) $character"""
 
 # Transient prompt for faster input after first command
-transient_prompt = "[➜](#7e9cd8) "
+[transient_prompt]
+format = "[➜](#7e9cd8) "
 
 # ==================== TIMEOUT ====================
 command_timeout = 500
