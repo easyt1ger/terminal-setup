@@ -1,268 +1,308 @@
-# Starship Configuration
-# ~/.config/starship.toml
+"$schema" = 'https://starship.rs/config-schema.json'
 
-# ==================== FORMAT ====================
-format = """
-[┌───────────────>](bold #7e9cd8) $username@$hostname
-[│](bold #7e9cd8)  $directory$git_branch$git_status$nodejs$python$rust
-[└─>](bold #7e9cd8) $character"""
-
-# Transient prompt for faster input after first command
-[transient_prompt]
-format = "[➜](#7e9cd8) "
-
-# ==================== TIMEOUT ====================
-command_timeout = 500
-scan_timeout = 10
-
-# ==================== DIRECTORY ====================
-[directory]
-truncation_length = 3
-truncate_to_repo = true
-home_symbol = "~"
-read_only = "🔒"
-read_only_style = "bold #c34043"
-style = "bold #7fb4ca"
-format = "[$read_only$path]($style) "
-
-[directory.substitutions]
-"Documents" = "󰈙 "
-"Downloads" = " "
-"Music" = " "
-"Pictures" = " "
-"Videos" = " "
-"Projects" = "󰲋 "
-"work" = "󰼁 "
-"dev" = " "
-
-# ==================== GIT ====================
-[git_branch]
-symbol = " "
-truncation_length = 20
-truncation_symbol = "…"
-style = "bold #938aa9"
-format = "on [$symbol$branch]($style) "
-
-[git_status]
-style = "bold #c34043"
-conflicted = "🏳‍🌈"
-ahead = "⇡${count}"
-behind = "⇣${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-untracked = "?${count}"
-stashed = "$${count}"
-modified = "!${count}"
-staged = "+${count}"
-renamed = "»${count}"
-deleted = "✘${count}"
-format = '([$all_status$ahead_behind]($style) )'
-
-# ==================== PROGRAMMING LANGUAGES ====================
-[nodejs]
-symbol = " "
-style = "bold #76946a"
-format = "[$symbol($version )]($style)"
-detect_extensions = ["js", "mjs", "cjs", "ts", "jsx", "tsx", "json"]
-detect_files = ["package.json", ".node-version"]
-
-[python]
-symbol = " "
-style = "bold #7e9cd8"
-format = "[$symbol($version )]($style)"
-detect_extensions = ["py"]
-detect_files = [".python-version", "Pipfile", "__pycache__", "pyproject.toml", "requirements.txt", "setup.py", "tox.ini"]
-
-[rust]
-symbol = "🦀"
-style = "bold #c0a36e"
-format = "[$symbol($version )]($style)"
-detect_extensions = ["rs"]
-detect_files = ["Cargo.toml"]
-
-[golang]
-symbol = "󰟓 "
-style = "bold #7fb4ca"
-format = "[$symbol($version )]($style)"
-detect_extensions = ["go"]
-detect_files = ["go.mod", "go.sum", "go.work"]
-
-[ruby]
-symbol = " "
-style = "bold #c34043"
-format = "[$symbol($version )]($style)"
-detect_extensions = ["rb"]
-detect_files = ["Gemfile", "Rakefile"]
-
-# ==================== TOOLS ====================
-[docker_context]
-symbol = "🐳 "
-style = "bold #7e9cd8"
-format = "[$symbol($context )]($style)"
-detect_extensions = []
-detect_files = ["docker-compose.yml", "docker-compose.yaml", "Dockerfile"]
-
-[package]
-symbol = "📦 "
-style = "bold #c0a36e"
-format = "[$symbol($version )]($style)"
-display_private = false
-
-# ==================== SYSTEM ====================
-[username]
-style_user = "bold #c0a36e"
-style_root = "bold #c34043"
-format = "[$user]($style)"
-disabled = false
-show_always = false
-
-[hostname]
-ssh_only = true
-ssh_symbol = "🌐 "
-style = "bold #76946a"
-format = "[$ssh_symbol$hostname]($style)"
-disabled = false
-
-[character]
-success_symbol = "[➜](#76946a)"
-error_symbol = "[➜](#c34043)"
-vimcmd_symbol = "[V](#c0a36e)"
-
-# ==================== TIME ====================
-[time]
-disabled = false
-format = "🕙[$time]($style) "
-time_format = "%R"
-style = "bold #938aa9"
-
-# ==================== STATUS ====================
-[status]
-symbol = "✖"
-success_symbol = ""
-format = '[\[$symbol $common_meaning$signal_name\]]($style) '
-map_symbol = true
-disabled = false
-style = "bold #c34043"
-recognize_signal_code = true
-recognize_exit_code = true
-
-# ==================== AWS ====================
 [aws]
-format = '[$symbol($profile )(\($region\) )]($style)'
-symbol = "☁️ "
-disabled = true
+symbol = " "
 
-# ==================== PERFORMANCE ====================
-# Disable slow modules
-[perl]
-disabled = true
-
-[dotnet]
-disabled = true
-
-[elixir]
-disabled = true
-
-[elm]
-disabled = true
-
-[erlang]
-disabled = true
-
-[haskell]
-disabled = true
-
-[java]
-disabled = true
-
-[julia]
-disabled = true
-
-[kotlin]
-disabled = true
-
-[nim]
-disabled = true
-
-[nix_shell]
-disabled = true
-
-[ocaml]
-disabled = true
-
-[php]
-disabled = true
-
-[purescript]
-disabled = true
-
-[scala]
-disabled = true
-
-[swift]
-disabled = true
-
-[terraform]
-disabled = true
-
-[typst]
-disabled = true
-
-[vlang]
-disabled = true
-
-[zig]
-disabled = true
+[azure]
+symbol = " "
 
 [battery]
-disabled = true
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂃 "
+unknown_symbol = "󰂑 "
+empty_symbol = "󰂎 "
 
 [buf]
-disabled = true
+symbol = " "
+
+[bun]
+symbol = " "
+
+[c]
+symbol = " "
+
+[cpp]
+symbol = " "
 
 [cmake]
-disabled = true
+symbol = " "
 
 [cobol]
-disabled = true
+symbol = " "
 
-[daml]
-disabled = true
+[conda]
+symbol = " "
+
+[container]
+symbol = " "
+
+[crystal]
+symbol = " "
+
+[dart]
+symbol = " "
 
 [deno]
-disabled = true
+symbol = " "
 
-[flake8]
-disabled = true
+[direnv]
+symbol = " "
+
+[directory]
+read_only = " 󰌾"
+
+[docker_context]
+symbol = " "
+
+[dotnet]
+symbol = " "
+
+[elixir]
+symbol = " "
+
+[elm]
+symbol = " "
+
+[erlang]
+symbol = " "
+
+[fennel]
+symbol = " "
+
+[fortran]
+symbol = " "
+
+[fossil_branch]
+symbol = " "
 
 [gcloud]
-disabled = true
+symbol = "󱇶 "
 
-[gitignore]
-disabled = true
+[gleam]
+symbol = " "
+
+[git_branch]
+symbol = " "
+
+[git_commit]
+tag_symbol = '  '
+
+[golang]
+symbol = " "
+
+[gradle]
+symbol = " "
 
 [guix_shell]
-disabled = true
+symbol = " "
+
+[haskell]
+symbol = " "
+
+[haxe]
+symbol = " "
 
 [helm]
-disabled = true
+symbol = " "
 
 [hg_branch]
-disabled = true
+symbol = " "
+
+[hostname]
+ssh_symbol = " "
+
+[java]
+symbol = " "
+
+[julia]
+symbol = " "
+
+[kotlin]
+symbol = " "
+
+[kubernetes]
+symbol = "󱃾 "
 
 [lua]
-disabled = true
+symbol = " "
+
+[maven]
+symbol = " "
 
 [memory_usage]
-disabled = true
+symbol = "󰍛 "
+
+[meson]
+symbol = "󰔷 "
+
+[mojo]
+symbol = "󰈸 "
 
 [nats]
-disabled = true
+symbol = " "
+
+[netns]
+symbol = "󰛳 "
+
+[nim]
+symbol = " "
+
+[nix_shell]
+symbol = " "
+
+[nodejs]
+symbol = " "
+
+[ocaml]
+symbol = " "
 
 [odin]
-disabled = true
+symbol = "󰟢 "
 
-[protobuf]
-disabled = true
+[opa]
+symbol = " "
+
+[openstack]
+symbol = " "
+
+[os.symbols]
+AIX = " "
+AlmaLinux = " "
+Alpaquita = " "
+Alpine = " "
+ALTLinux = " "
+Amazon = " "
+Android = " "
+AOSC = " "
+Arch = " "
+Artix = " "
+Bluefin = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Elementary = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = " "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = " "
+InstantOS = " "
+Ios = "󰀷 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = " "
+OpenCloudOS = " "
+openEuler = " "
+openSUSE = " "
+OracleLinux = "󰺡 "
+PikaOS = " "
+Pop = " "
+Raspbian = " "
+Redhat = "󱄛 "
+RedHatEnterprise = "󱄛 "
+Redox = "󰀘 "
+RockyLinux = " "
+Solus = " "
+SUSE = " "
+Ubuntu = " "
+Ultramarine = " "
+Unknown = " "
+Uos = " "
+Void = " "
+Windows = "󰍲 "
+Zorin = " "
+
+[package]
+symbol = "󰏗 "
+
+[perl]
+symbol = " "
+
+[php]
+symbol = " "
+
+[pijul_channel]
+symbol = " "
+
+[pixi]
+symbol = "󰏗 "
+
+[pulumi]
+symbol = " "
+
+[purescript]
+symbol = " "
+
+[python]
+symbol = " "
+
+[raku]
+symbol = "󱖊 "
+
+[red]
+symbol = "󱍼 "
+
+[rlang]
+symbol = "󰟔 "
+
+[ruby]
+symbol = " "
+
+[rust]
+symbol = "󱘗 "
+
+[scala]
+symbol = " "
+
+[shlvl]
+symbol = "󰹍 "
+
+[singularity]
+symbol = " "
+
+[solidity]
+symbol = " "
 
 [spack]
-disabled = true
+symbol = " "
+
+[status]
+symbol = " "
+
+[sudo]
+symbol = " "
+
+[swift]
+symbol = " "
+
+[terraform]
+symbol = " "
+
+[vlang]
+symbol = " "
+
+[typst]
+symbol = " "
+
+[vagrant]
+symbol = " "
+
+[xmake]
+symbol = " "
+
+[zig]
+symbol = " "
