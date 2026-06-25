@@ -185,12 +185,12 @@ copy_configs() {
     # Script directory
     SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
     
-    # Nvim
-    if [ -f "$SCRIPT_DIR/init.lua" ]; then
-        cp "$SCRIPT_DIR/init.lua" ~/.config/nvim/
-        log_success "Nvim config installed"
+    # Nvim (LazyVim-basierte Verzeichnisstruktur)
+    if [ -d "$SCRIPT_DIR/nvim" ]; then
+        cp -r "$SCRIPT_DIR/nvim/." ~/.config/nvim/
+        log_success "Nvim config installed (LazyVim)"
     else
-        log_warning "init.lua not found in script directory"
+        log_warning "nvim/ directory not found in script directory"
     fi
     
     # Fish
@@ -328,7 +328,7 @@ print_summary() {
     echo -e "${GREEN}======================================${NC}"
     echo ""
     echo "Configuration files installed:"
-    echo "  • ~/.config/nvim/init.lua"
+    echo "  • ~/.config/nvim/ (LazyVim-Struktur)"
     echo "  • ~/.config/fish/config.fish"
     echo "  • ~/.config/starship.toml"
     echo "  • ~/.config/ghostty/config"
@@ -336,7 +336,8 @@ print_summary() {
     echo "Next steps:"
     echo "  1. Close and reopen your terminal"
     echo "  2. Run: nvim"
-    echo "  3. Lazy.nvim will auto-install plugins (first startup)"
+    echo "  3. LazyVim installiert Plugins automatisch beim ersten Start"
+    echo "  4. LSP-Server werden via Mason installiert: :Mason in nvim"
     echo ""
     echo "Quick keybindings:"
     echo "  • <leader> = space"
@@ -369,9 +370,8 @@ main() {
     copy_configs
     set_shell
     install_formatters
-    install_lsps
     install_pi
-    
+
     print_summary
 }
 
