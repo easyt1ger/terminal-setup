@@ -60,15 +60,6 @@ require("lazy").setup({
             require("kanagawa").setup({
                 compile = false,
                 undercurl = true,
-                colors = {
-                    palette = {},
-                    theme = {
-                        all = {
-                            ui = "bg",
-                            float = "bg",
-                        },
-                    },
-                },
                 overrides = function()
                     return {}
                 end,
@@ -229,33 +220,28 @@ require("lazy").setup({
     -- Treesitter
     {
         "nvim-treesitter/nvim-treesitter",
+        lazy = false,
         build = ":TSUpdate",
         config = function()
-            require("nvim-treesitter.configs").setup({
-                ensure_installed = {
-                    "lua",
-                    "python",
-                    "javascript",
-                    "typescript",
-                    "rust",
-                    "bash",
-                    "vim",
-                    "json",
-                    "yaml",
-                    "markdown",
-                },
-                highlight = { enable = true },
-                indent = { enable = true },
+            require("nvim-treesitter").install({
+                "lua",
+                "python",
+                "javascript",
+                "typescript",
+                "rust",
+                "bash",
+                "vim",
+                "json",
+                "yaml",
+                "markdown",
             })
         end,
     },
 
-    -- LSP Zero (LSP Setup)
+    -- LSP
     {
-        "VonHeikemen/lsp-zero.nvim",
-        branch = "v3.x",
+        "neovim/nvim-lspconfig",
         dependencies = {
-            "neovim/nvim-lspconfig",
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-path",
@@ -264,21 +250,24 @@ require("lazy").setup({
             "rafamadriz/friendly-snippets",
         },
         config = function()
-            local lsp_zero = require("lsp-zero")
-            lsp_zero.extend_lspconfig()
+            vim.lsp.config("*", {
+                capabilities = require("cmp_nvim_lsp").default_capabilities(),
+            })
 
-            lsp_zero.on_attach(function(client, bufnr)
-                lsp_zero.default_keymaps({ buffer = bufnr })
-                vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr })
-                vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr })
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
-                vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
-                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = bufnr })
-                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = bufnr })
-                vim.keymap.set("n", "go", vim.lsp.buf.type_definition, { buffer = bufnr })
-                vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr })
-                vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, { buffer = bufnr })
-            end)
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(ev)
+                    local bufnr = ev.buf
+                    vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = bufnr })
+                    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = bufnr })
+                    vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = bufnr })
+                    vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr })
+                    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = bufnr })
+                    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = bufnr })
+                    vim.keymap.set("n", "go", vim.lsp.buf.type_definition, { buffer = bufnr })
+                    vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = bufnr })
+                    vim.keymap.set("n", "<leader>dl", vim.diagnostic.open_float, { buffer = bufnr })
+                end,
+            })
 
             -- Autocompletion
             local cmp = require("cmp")
@@ -304,22 +293,19 @@ require("lazy").setup({
                 }),
             })
 
-            require("lspconfig").lua_ls.setup(lsp_zero.nvim_lua_ls())
+            vim.lsp.config("lua_ls", {
+                settings = {
+                    Lua = {
+                        runtime = { version = "LuaJIT" },
+                        workspace = {
+                            checkThirdParty = false,
+                            library = vim.api.nvim_get_runtime_file("", true),
+                        },
+                    },
+                },
+            })
 
-            -- Python
-            require("lspconfig").pyright.setup({})
-
-            -- JavaScript/TypeScript
-            require("lspconfig").ts_ls.setup({})
-
-            -- Rust
-            require("lspconfig").rust_analyzer.setup({})
-
-            -- JSON
-            require("lspconfig").jsonls.setup({})
-
-            -- YAML
-            require("lspconfig").yamlls.setup({})
+            vim.lsp.enable({ "lua_ls", "pyright", "ts_ls", "rust_analyzer", "jsonls", "yamlls" })
         end,
     },
 
