@@ -1,12 +1,17 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+command_timeout = 500
+scan_timeout = 10
+
 [aws]
+disabled = true
 symbol = " "
 
 [azure]
 symbol = " "
 
 [battery]
+disabled = true
 full_symbol = "󰁹 "
 charging_symbol = "󰂄 "
 discharging_symbol = "󰂃 "
@@ -14,6 +19,7 @@ unknown_symbol = "󰂑 "
 empty_symbol = "󰂎 "
 
 [buf]
+disabled = true
 symbol = " "
 
 [bun]
@@ -26,9 +32,11 @@ symbol = " "
 symbol = " "
 
 [cmake]
+disabled = true
 symbol = " "
 
 [cobol]
+disabled = true
 symbol = " "
 
 [conda]
@@ -44,6 +52,7 @@ symbol = " "
 symbol = " "
 
 [deno]
+disabled = true
 symbol = " "
 
 [direnv]
@@ -51,20 +60,38 @@ symbol = " "
 
 [directory]
 read_only = " 󰌾"
+truncation_length = 3
+truncate_to_repo = true
+home_symbol = "~"
+
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+"Videos" = " "
+"Projects" = "󰲋 "
+"Projekte" = "󰲋 "
+"work" = "󰼁 "
+"dev" = " "
 
 [docker_context]
 symbol = " "
 
 [dotnet]
+disabled = true
 symbol = " "
 
 [elixir]
+disabled = true
 symbol = " "
 
 [elm]
+disabled = true
 symbol = " "
 
 [erlang]
+disabled = true
 symbol = " "
 
 [fennel]
@@ -77,6 +104,7 @@ symbol = " "
 symbol = " "
 
 [gcloud]
+disabled = true
 symbol = "󱇶 "
 
 [gleam]
@@ -95,42 +123,51 @@ symbol = " "
 symbol = " "
 
 [guix_shell]
+disabled = true
 symbol = " "
 
 [haskell]
+disabled = true
 symbol = " "
 
 [haxe]
 symbol = " "
 
 [helm]
+disabled = true
 symbol = " "
 
 [hg_branch]
+disabled = true
 symbol = " "
 
 [hostname]
 ssh_symbol = " "
 
 [java]
+disabled = true
 symbol = " "
 
 [julia]
+disabled = true
 symbol = " "
 
 [kotlin]
+disabled = true
 symbol = " "
 
 [kubernetes]
 symbol = "󱃾 "
 
 [lua]
+disabled = true
 symbol = " "
 
 [maven]
 symbol = " "
 
 [memory_usage]
+disabled = true
 symbol = "󰍛 "
 
 [meson]
@@ -140,24 +177,29 @@ symbol = "󰔷 "
 symbol = "󰈸 "
 
 [nats]
+disabled = true
 symbol = " "
 
 [netns]
 symbol = "󰛳 "
 
 [nim]
+disabled = true
 symbol = " "
 
 [nix_shell]
+disabled = true
 symbol = " "
 
 [nodejs]
 symbol = " "
 
 [ocaml]
+disabled = true
 symbol = " "
 
 [odin]
+disabled = true
 symbol = "󰟢 "
 
 [opa]
@@ -228,11 +270,14 @@ Zorin = " "
 
 [package]
 symbol = "󰏗 "
+display_private = false
 
 [perl]
+disabled = true
 symbol = " "
 
 [php]
+disabled = true
 symbol = " "
 
 [pijul_channel]
@@ -245,6 +290,7 @@ symbol = "󰏗 "
 symbol = " "
 
 [purescript]
+disabled = true
 symbol = " "
 
 [python]
@@ -264,8 +310,11 @@ symbol = " "
 
 [rust]
 symbol = "󱘗 "
+detect_extensions = ["rs"]
+detect_files = ["Cargo.toml"]
 
 [scala]
+disabled = true
 symbol = " "
 
 [shlvl]
@@ -278,6 +327,7 @@ symbol = " "
 symbol = " "
 
 [spack]
+disabled = true
 symbol = " "
 
 [status]
@@ -287,15 +337,19 @@ symbol = " "
 symbol = " "
 
 [swift]
+disabled = true
 symbol = " "
 
 [terraform]
+disabled = true
 symbol = " "
 
 [vlang]
+disabled = true
 symbol = " "
 
 [typst]
+disabled = true
 symbol = " "
 
 [vagrant]
@@ -305,4 +359,10 @@ symbol = " "
 symbol = " "
 
 [zig]
+disabled = true
 symbol = " "
+
+[character]
+success_symbol = "[➜](bold green)"
+error_symbol = "[➜](bold red)"
+vimcmd_symbol = "[V](bold yellow)"
