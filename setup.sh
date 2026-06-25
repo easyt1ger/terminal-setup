@@ -237,47 +237,6 @@ set_shell() {
     fi
 }
 
-# ==================== INSTALL LSP SERVERS ====================
-install_lsps() {
-    log_info "Would you like to install LSP servers? (y/n)"
-    read -r response
-    
-    if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
-        log_info "Installing LSP servers..."
-        
-        if [ "$OS_TYPE" = "macos" ]; then
-            brew install lua-language-server
-            brew install pyright
-            brew install typescript-language-server
-            brew install rust-analyzer
-            brew install yaml-language-server
-            brew install jsonls
-        elif [ "$LINUX_DISTRO" = "arch" ]; then
-            # Arch packages
-            sudo pacman -S --noconfirm \
-                lua-language-server \
-                python-lsp-server \
-                rust-analyzer \
-                yaml-language-server
-            
-            # Npm-based LSP servers
-            npm install -g \
-                pyright \
-                typescript-language-server \
-                vscode-langservers-extracted
-        else
-            # Debian/Ubuntu
-            npm install -g \
-                pyright \
-                typescript-language-server \
-                yaml-language-server \
-                vscode-langservers-extracted
-        fi
-        
-        log_success "LSP servers installed"
-    fi
-}
-
 # ==================== INSTALL FORMATTERS ====================
 install_formatters() {
     log_info "Installing additional formatters..."
