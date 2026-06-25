@@ -87,6 +87,15 @@ require("lazy").setup({
         end,
     },
 
+    -- Which-Key (Leader-Popup)
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("which-key").setup({})
+        end,
+    },
+
     -- File Explorer
     {
         "nvim-tree/nvim-tree.lua",
