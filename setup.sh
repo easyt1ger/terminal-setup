@@ -252,9 +252,9 @@ install_formatters() {
         sudo apt install -y shellcheck shfmt
     fi
     
-    pip install --user black isort pylint flake8
     npm install -g prettier eslint
-    
+
+    log_info "Python-Formatter (black, isort, pylint) werden via Mason in Neovim installiert"
     log_success "Formatters installed"
 }
 
