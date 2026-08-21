@@ -9,10 +9,6 @@ set -gx VISUAL nvim
 # Terminal
 set -gx TERM ghostty
 
-# Language
-set -gx LANG en_US.UTF-8
-set -gx LC_ALL en_US.UTF-8
-
 # FZF Integration
 if type -q fzf
     fzf --fish | source
