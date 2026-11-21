@@ -31,8 +31,7 @@ if test -d ~/.cargo/bin
 end
 
 # ==================== ALIASES ====================
-# Nvim
-alias v nvim
+# Nvim (v ist als Funktion weiter unten definiert)
 alias vi nvim
 alias vim nvim
 alias vimdiff "nvim -d"
@@ -100,11 +99,19 @@ function mkcd
     cd $argv
 end
 
+# Git-Projekte in den üblichen Verzeichnissen auflisten
+function __project_dirs
+    set -l roots
+    for d in ~/Projekte ~/projects ~/work ~/dev
+        test -d $d && set -a roots $d
+    end
+    test (count $roots) -eq 0 && return 1
+    find $roots -maxdepth 3 -type d -name .git -prune 2>/dev/null | sed 's|/\.git$||'
+end
+
 # Quick project navigation
 function p
-    set -l project (find ~/{projects,work,dev} -maxdepth 2 -type d -name ".git" -parent 2>/dev/null | \
-                    sed 's|/.git||' | \
-                    fzf --preview 'ls -la {} 2>/dev/null' --preview-window right:30% 2>/dev/null)
+    set -l project (__project_dirs | fzf --preview 'ls -la {}' --preview-window right:30%)
     test -n "$project" && cd "$project" && nvim
 end
 
@@ -117,10 +124,8 @@ end
 
 # Tmux project session
 function tm
-    set -l session (find ~/{projects,work,dev} -maxdepth 2 -type d -name ".git" -parent 2>/dev/null | \
-                    sed 's|/.git||' | \
-                    fzf --preview 'ls -la {} 2>/dev/null' 2>/dev/null)
-    test -n "$session" && tmux new-session -s (basename $session) -c $session
+    set -l session (__project_dirs | fzf --preview 'ls -la {}')
+    test -n "$session" && tmux new-session -A -s (basename $session) -c $session
 end
 
 # Git log with fzf
@@ -149,13 +154,24 @@ end
 
 # Update system
 function update
-    switch (uname -s)
-        case Darwin
-            echo "Updating Homebrew..."
-            brew update && brew upgrade
-        case Linux
-            echo "Updating System..."
-            sudo apt update && sudo apt upgrade -y
+    if type -q brew
+        echo "Updating Homebrew..."
+        brew update && brew upgrade
+    else if type -q yay
+        echo "Updating System (yay)..."
+        yay -Syu
+    else if type -q paru
+        echo "Updating System (paru)..."
+        paru -Syu
+    else if type -q pacman
+        echo "Updating System (pacman)..."
+        sudo pacman -Syu
+    else if type -q apt
+        echo "Updating System (apt)..."
+        sudo apt update && sudo apt upgrade -y
+    else
+        echo "Kein unterstützter Paketmanager gefunden"
+        return 1
     end
 end
 
@@ -176,15 +192,12 @@ end
 
 # Python venv quick setup
 function pyvenv
-    if test -z "$argv"
-        set -l venv_name "venv"
-    else
-        set -l venv_name $argv[1]
-    end
-    
+    set -l venv_name venv
+    test (count $argv) -gt 0 && set venv_name $argv[1]
+
     python3 -m venv $venv_name
-    source $venv_name/bin/activate.fish
-    echo "Virtual environment '$venv_name' created and activated!"
+    and source $venv_name/bin/activate.fish
+    and echo "Virtual environment '$venv_name' created and activated!"
 end
 
 # Quick Pi commands

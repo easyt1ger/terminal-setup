@@ -2,9 +2,9 @@
 --
 -- LazyVim hat bereits:
 --   <C-h/j/k/l>   Fenster-Navigation
---   <leader>ff/fg/fb/fh  Telescope
---   <leader>e      Neo-tree toggle
---   <leader>gg     Lazygit (snacks) -- wird durch toggleterm überschrieben
+--   <leader>ff/sg/fb/sh  Snacks-Picker (Dateien, Grep, Buffer, Hilfe)
+--   <leader>e      Snacks-Explorer
+--   <leader>gg     Lazygit -- hier via toggleterm (plugins/ui.lua)
 --   ]d/[d          Diagnostics
 --   <S-h>/<S-l>    Buffer prev/next
 
@@ -13,8 +13,8 @@ vim.keymap.set("n", "<leader>w", "<cmd>write<cr>", { desc = "Save" })
 vim.keymap.set("n", "<leader>q", "<cmd>quit<cr>", { desc = "Quit" })
 vim.keymap.set("n", "<leader>Q", "<cmd>quit!<cr>", { desc = "Force Quit" })
 
--- Alternativer Neo-tree Shortcut (gewohntes <C-n>)
-vim.keymap.set("n", "<C-n>", "<cmd>Neotree toggle<cr>", { desc = "Toggle Neo-tree" })
+-- Alternativer Explorer-Shortcut (gewohntes <C-n>), entspricht <leader>e
+vim.keymap.set("n", "<C-n>", function() Snacks.explorer() end, { desc = "Toggle Explorer" })
 
 -- Terminal-Mode: Fenster-Navigation ohne normalen Modus
 vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { noremap = true })
