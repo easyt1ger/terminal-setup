@@ -62,17 +62,8 @@ chsh -s /opt/homebrew/bin/fish
 
 #### Linux (Arch Linux)
 ```bash
-# Core packages
-sudo pacman -S neovim fish git fzf ripgrep eza tmux lazygit
-
-# Starship (über AUR)
-paru -S starship
-# oder yay -S starship
-# oder direkt: curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir ~/.local/bin
-
-# Ghostty (über AUR)
-paru -S ghostty
-# oder yay -S ghostty
+# Alle Pakete aus den offiziellen Repos (inkl. Starship & Ghostty)
+sudo pacman -Syu --needed neovim fish git fzf ripgrep eza tmux lazygit starship ghostty
 
 # Configs
 mkdir -p ~/.config/{nvim,fish,ghostty}
@@ -467,8 +458,8 @@ chsh -s /usr/bin/fish
 # macOS mit Homebrew
 brew install ghostty
 
-# Arch (AUR)
-paru -S ghostty
+# Arch
+sudo pacman -S ghostty
 
 # Config prüfen
 ghostty +validate-config

@@ -29,6 +29,21 @@ log_warning() {
     echo -e "${YELLOW}⚠${NC} $1"
 }
 
+# Globale npm-Pakete installieren. Ist das globale Prefix (z. B. /usr) nicht
+# beschreibbar, wird nach ~/.local installiert (Binaries in ~/.local/bin).
+npm_global() {
+    if ! command -v npm &> /dev/null; then
+        log_warning "npm not found, skipping: $*"
+        return 0
+    fi
+    if [ -w "$(npm config get prefix)/lib" ]; then
+        npm install -g "$@"
+    else
+        mkdir -p "$HOME/.local"
+        npm install -g --prefix "$HOME/.local" "$@"
+    fi
+}
+
 # Detect OS
 OS="$(uname -s)"
 case "${OS}" in
@@ -73,9 +88,9 @@ install_package_manager() {
             log_success "Homebrew already installed"
         fi
     elif [ "$LINUX_DISTRO" = "arch" ]; then
+        # Kein "pacman -Sy" allein (Teil-Update!), das System wird in
+        # install_dependencies mit -Syu aktualisiert
         log_info "Using pacman as package manager"
-        # Update pacman database
-        sudo pacman -Sy
     elif [ "$LINUX_DISTRO" = "debian" ]; then
         sudo apt update
         log_info "Using apt as package manager"
@@ -102,7 +117,6 @@ install_dependencies() {
         brew install tmux
         brew install lazygit
         brew install stylua
-        brew install black
         brew install prettier
         
         # Optional: Python, Node for better LSP support
@@ -111,7 +125,8 @@ install_dependencies() {
         # brew install rust
     elif [ "$LINUX_DISTRO" = "arch" ]; then
         # Arch Linux with pacman
-        sudo pacman -S --noconfirm \
+        # -Syu: System aktualisieren + installieren, --needed: Vorhandenes überspringen
+        sudo pacman -Syu --needed --noconfirm \
             neovim \
             fish \
             git \
@@ -120,23 +135,12 @@ install_dependencies() {
             eza \
             tmux \
             lazygit \
+            starship \
+            ghostty \
             python \
-            python-pip \
             nodejs \
             npm \
             base-devel
-        
-        # Starship via AUR or direct install
-        log_info "Installing Starship..."
-        if ! command -v starship &> /dev/null; then
-            # Direct install
-            curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir ~/.local/bin
-        fi
-        
-        # Ghostty needs to be built from source on Arch
-        log_info "Ghostty on Arch: Either install from AUR (paru/yay) or build from source"
-        log_info "  paru -S ghostty"
-        log_info "  or yay -S ghostty"
     else
         # Linux Debian/Ubuntu with apt
         sudo apt update
@@ -154,11 +158,9 @@ install_dependencies() {
             npm
         
         # Starship
-        curl -sS https://starship.rs/install.sh | sh
-        
-        # Language formatters
-        pip3 install black isort pylint
-        npm install -g prettier
+        if ! command -v starship &> /dev/null; then
+            curl -sS https://starship.rs/install.sh | sh
+        fi
     fi
 
     log_success "Dependencies installed"
@@ -222,14 +224,20 @@ copy_configs() {
 set_shell() {
     log_info "Setting Fish as default shell..."
     
-    if [ "$OS_TYPE" = "macos" ]; then
-        FISH_PATH="/opt/homebrew/bin/fish"
-    else
-        # Linux
-        FISH_PATH="/usr/bin/fish"
+    FISH_PATH="$(command -v fish || true)"
+    if [ -z "$FISH_PATH" ]; then
+        log_warning "fish not found, skipping default shell change"
+        return 0
     fi
-    
-    if [ "$SHELL" != "$FISH_PATH" ]; then
+
+    # Login-Shell aus der Benutzerdatenbank lesen ($SHELL hängt vom Terminal ab)
+    if [ "$OS_TYPE" = "macos" ]; then
+        LOGIN_SHELL="$(dscl . -read "/Users/$USER" UserShell | awk '{print $2}')"
+    else
+        LOGIN_SHELL="$(getent passwd "$USER" | cut -d: -f7)"
+    fi
+
+    if [ "$(basename "$LOGIN_SHELL")" != "fish" ]; then
         chsh -s "$FISH_PATH"
         log_success "Fish set as default shell"
     else
@@ -242,17 +250,17 @@ install_formatters() {
     log_info "Installing additional formatters..."
     
     if [ "$OS_TYPE" = "macos" ]; then
-        brew install shfmt
+        brew install shfmt shellcheck eslint
     elif [ "$LINUX_DISTRO" = "arch" ]; then
-        sudo pacman -S --noconfirm \
+        sudo pacman -S --needed --noconfirm \
             shfmt \
             shellcheck \
-            prettier
+            prettier \
+            eslint
     else
         sudo apt install -y shellcheck shfmt
+        npm_global prettier eslint
     fi
-    
-    npm install -g prettier eslint
 
     log_info "Python-Formatter (black, isort, pylint) werden via Mason in Neovim installiert"
     log_success "Formatters installed"
@@ -261,18 +269,18 @@ install_formatters() {
 # ==================== INSTALL PI (Agentic Coding Agent) ====================
 install_pi() {
     log_info "Would you like to install Pi (agentic coding agent)? (y/n)"
-    read -r response
+    read -r response || response="n"
     
     if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
         log_info "Installing Pi coding agent..."
         
         if ! command -v npm &> /dev/null; then
             log_error "npm not found. Install Node.js first."
-            return 1
+            return 0
         fi
-        
+
         # Install Pi globally
-        npm install -g @earendil-works/pi-coding-agent
+        npm_global @earendil-works/pi-coding-agent
         
         log_success "Pi coding agent installed"
         log_info "Use: pi in terminal or <leader>ai in Nvim"
@@ -301,9 +309,11 @@ print_summary() {
     echo "Quick keybindings:"
     echo "  • <leader> = space"
     echo "  • <leader>ff = Find files"
-    echo "  • <leader>fg = Live grep"
+    echo "  • <leader>/ = Live grep"
     echo "  • <C-\\> = Toggle terminal"
-    echo "  • <C-h/j/k/l> = Navigate splits"
+    echo "  • <C-h/j/k/l> = Navigate Nvim windows"
+    echo "  • Ctrl+Alt+h/j/k/l = Navigate Ghostty splits"
+    echo "  • Full list: KEYBINDINGS.md"
     echo ""
     echo "Useful Fish functions:"
     echo "  • p = Project picker"
@@ -313,7 +323,7 @@ print_summary() {
     echo ""
     echo "Troubleshooting:"
     echo "  • If plugins don't load: :Lazy sync in nvim"
-    echo "  • If LSP doesn't work: :LspInfo in nvim"
+    echo "  • If LSP doesn't work: :LspInfo / :Mason in nvim"
     echo "  • Check configs: ~/.config/{nvim,fish,starship.toml,ghostty/config}"
     echo ""
 }
