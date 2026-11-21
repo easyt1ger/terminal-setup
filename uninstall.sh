@@ -136,7 +136,7 @@ remove_system_packages() {
     read -r response
 
     if [ "$response" = "y" ] || [ "$response" = "Y" ]; then
-        log_warning "This will uninstall: neovim, ghostty, starship, fish, fzf, ripgrep, exa, tmux, lazygit"
+        log_warning "This will uninstall: neovim, ghostty, starship, fish, fzf, ripgrep, eza, tmux, lazygit"
         log_warning "Continue? (y/n)"
         read -r confirm
 
@@ -149,17 +149,17 @@ remove_system_packages() {
 
         if [ "$OS_TYPE" = "macos" ]; then
             # macOS with Homebrew
-            brew uninstall neovim ghostty starship fish fzf ripgrep exa tmux lazygit -y 2>/dev/null || true
+            brew uninstall neovim ghostty starship fish fzf ripgrep eza tmux lazygit -y 2>/dev/null || true
             log_success "Homebrew packages uninstalled"
 
         elif [ "$LINUX_DISTRO" = "arch" ]; then
             # Arch Linux
-            sudo pacman -R neovim ghostty starship fish fzf ripgrep exa tmux lazygit -y 2>/dev/null || true
+            sudo pacman -R neovim ghostty starship fish fzf ripgrep eza tmux lazygit -y 2>/dev/null || true
             log_success "Arch packages uninstalled"
 
         elif [ "$LINUX_DISTRO" = "debian" ]; then
             # Debian/Ubuntu
-            sudo apt remove neovim ghostty fish fzf ripgrep exa tmux lazygit -y 2>/dev/null || true
+            sudo apt remove neovim ghostty fish fzf ripgrep eza tmux lazygit -y 2>/dev/null || true
             sudo apt autoremove -y 2>/dev/null || true
             log_success "apt packages uninstalled"
         fi

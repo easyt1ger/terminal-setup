@@ -47,7 +47,7 @@ Dies installiert:
 
 #### macOS
 ```bash
-brew install neovim ghostty starship fish fzf ripgrep exa tmux lazygit
+brew install neovim ghostty starship fish fzf ripgrep eza tmux lazygit
 
 # Configs kopieren
 mkdir -p ~/.config/{nvim,fish,ghostty}
@@ -63,7 +63,7 @@ chsh -s /opt/homebrew/bin/fish
 #### Linux (Arch Linux)
 ```bash
 # Core packages
-sudo pacman -S neovim fish git fzf ripgrep exa tmux lazygit
+sudo pacman -S neovim fish git fzf ripgrep eza tmux lazygit
 
 # Starship (über AUR)
 paru -S starship

@@ -98,7 +98,7 @@ install_dependencies() {
         brew install git
         brew install fzf
         brew install ripgrep
-        brew install exa
+        brew install eza
         brew install tmux
         brew install lazygit
         brew install stylua
@@ -117,7 +117,7 @@ install_dependencies() {
             git \
             fzf \
             ripgrep \
-            exa \
+            eza \
             tmux \
             lazygit \
             python \
@@ -146,7 +146,7 @@ install_dependencies() {
             git \
             fzf \
             ripgrep \
-            exa \
+            eza \
             tmux \
             lazygit \
             python3-pip \

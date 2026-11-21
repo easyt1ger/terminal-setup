@@ -68,7 +68,7 @@ Ghostty-Defaults (nicht überschrieben, gelten weiterhin):
 |---|---|
 | `v [datei]` | nvim; ohne Argument: Datei per fzf wählen |
 | `vi`, `vim` | nvim |
-| `ls`, `la`, `ll`, `lt` | exa / lsd (Liste, alle, lang, Baum) |
+| `ls`, `la`, `ll`, `lt` | eza / lsd (Liste, alle, lang, Baum) |
 | `..`, `...` | Ein / zwei Ebenen hoch |
 | `gs` `ga` `gc` `gp` `gpl` `gd` `gl` `gb` `gco` | git status/add/commit/push/pull/diff/log/branch/checkout |
 | `gcl <url>` | git clone + cd |

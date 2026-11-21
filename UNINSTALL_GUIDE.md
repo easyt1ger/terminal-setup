@@ -134,17 +134,17 @@ npm uninstall -g typescript-language-server pyright
 
 #### macOS
 ```bash
-brew uninstall neovim ghostty starship fish fzf ripgrep exa tmux lazygit
+brew uninstall neovim ghostty starship fish fzf ripgrep eza tmux lazygit
 ```
 
 #### Arch Linux
 ```bash
-sudo pacman -R neovim ghostty starship fish fzf ripgrep exa tmux lazygit
+sudo pacman -R neovim ghostty starship fish fzf ripgrep eza tmux lazygit
 ```
 
 #### Debian/Ubuntu
 ```bash
-sudo apt remove neovim ghostty fish fzf ripgrep exa tmux lazygit
+sudo apt remove neovim ghostty fish fzf ripgrep eza tmux lazygit
 sudo apt autoremove -y
 ```
 

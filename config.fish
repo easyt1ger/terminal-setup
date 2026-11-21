@@ -37,11 +37,11 @@ alias vim nvim
 alias vimdiff "nvim -d"
 
 # File operations
-if type -q exa
-    alias ls exa
-    alias la "exa -la"
-    alias ll "exa -lh"
-    alias lt "exa -lhT"
+if type -q eza
+    alias ls eza
+    alias la "eza -la"
+    alias ll "eza -lh"
+    alias lt "eza -lhT"
 else if type -q lsd
     alias ls lsd
     alias la "lsd -la"
