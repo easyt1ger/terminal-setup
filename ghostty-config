@@ -64,18 +64,19 @@ scrollback-limit = 3000
 mouse-hide-while-typing = true
 
 # ==================== KEYBINDINGS ====================
-# Alt = Ghostty-Ebene
-#   Alt+h/j/k/l         Split-Fokus
+# Alt+Shift = Ghostty-Ebene, Ctrl+Alt = Split-Fokus
+# (Alt+h/j/k/l bleibt frei für Nvim und Fish)
+#   Ctrl+Alt+h/j/k/l    Split-Fokus
 #   Alt+Shift+h/l       Tab vor/zurück
 #   Alt+Shift+t         Neue Tab
 #   Alt+Shift+v         Neuer Split vertikal (rechts)
 #   Alt+Shift+s         Neuer Split horizontal (unten)
 
 # Navigate splits
-keybind = alt+h=goto_split:left
-keybind = alt+l=goto_split:right
-keybind = alt+k=goto_split:up
-keybind = alt+j=goto_split:down
+keybind = ctrl+alt+h=goto_split:left
+keybind = ctrl+alt+l=goto_split:right
+keybind = ctrl+alt+k=goto_split:up
+keybind = ctrl+alt+j=goto_split:down
 
 # Navigate tabs
 keybind = alt+shift+h=previous_tab

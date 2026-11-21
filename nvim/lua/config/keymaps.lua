@@ -8,9 +8,8 @@
 --   ]d/[d          Diagnostics
 --   <S-h>/<S-l>    Buffer prev/next
 
--- Schnellspeichern / Beenden
-vim.keymap.set("n", "<leader>w", "<cmd>write<cr>", { desc = "Save" })
-vim.keymap.set("n", "<leader>q", "<cmd>quit<cr>", { desc = "Quit" })
+-- Speichern/Beenden: LazyVim-Defaults nutzen (<C-s> speichern, <leader>qq beenden,
+-- <leader>bd Buffer schließen). <leader>w/<leader>q sind dort Gruppen-Präfixe.
 vim.keymap.set("n", "<leader>Q", "<cmd>quit!<cr>", { desc = "Force Quit" })
 
 -- Alternativer Explorer-Shortcut (gewohntes <C-n>), entspricht <leader>e

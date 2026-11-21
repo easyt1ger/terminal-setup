@@ -7,7 +7,7 @@ Faustregel für die Ebenen:
 
 | Ebene | Modifier | Wofür |
 |---|---|---|
-| Ghostty | **Alt** | Tabs & Splits des Terminals |
+| Ghostty | **Alt+Shift** / **Ctrl+Alt** | Tabs & Splits des Terminals |
 | Neovim | **Ctrl** / **Leertaste** | Fenster, Editor-Aktionen |
 | Fish | **Ctrl** (+ fzf) | Shell-Suche, History |
 
@@ -17,7 +17,7 @@ Faustregel für die Ebenen:
 
 | Taste | Aktion |
 |---|---|
-| `Alt+h` / `Alt+j` / `Alt+k` / `Alt+l` | Fokus Split links / unten / oben / rechts |
+| `Ctrl+Alt+h` / `j` / `k` / `l` | Fokus Split links / unten / oben / rechts |
 | `Alt+Shift+h` | Vorheriger Tab |
 | `Alt+Shift+l` | Nächster Tab |
 | `Alt+Shift+t` | Neuer Tab |
@@ -34,8 +34,8 @@ Ghostty-Defaults (nicht überschrieben, gelten weiterhin):
 | `Ctrl+=` / `Ctrl+-` / `Ctrl+0` | Schrift größer / kleiner / zurücksetzen |
 | `Ctrl+Shift+,` | Config neu laden |
 
-> ⚠️ Weil Ghostty `Alt+h/j/k/l` abfängt, kommen diese Tasten **nicht** mehr in
-> Fish oder Neovim an (z. B. LazyVims `Alt+j/k` = Zeile verschieben).
+> `Alt+h/j/k/l` (ohne Ctrl) bleibt frei und kommt in Fish und Neovim an
+> (z. B. LazyVims `Alt+j/k` = Zeile verschieben).
 
 ---
 
@@ -90,8 +90,6 @@ Ghostty-Defaults (nicht überschrieben, gelten weiterhin):
 
 | Taste | Modus | Aktion |
 |---|---|---|
-| `<leader>w` | n | Speichern |
-| `<leader>q` | n | Fenster schließen |
 | `<leader>Q` | n | Schließen ohne Speichern |
 | `Ctrl+\` | n / t | Floating Terminal ein/aus (toggleterm) |
 | `<leader>gg` | n | Lazygit (toggleterm) |
@@ -143,6 +141,7 @@ Ghostty-Defaults (nicht überschrieben, gelten weiterhin):
 
 | Taste | Aktion |
 |---|---|
+| `Alt+j` / `Alt+k` | Zeile (oder Auswahl) nach unten / oben verschieben |
 | `s` | Flash: Sprung zu beliebiger Stelle |
 | `S` | Flash: Treesitter-Auswahl |
 | `]h` / `[h` | Nächster / vorheriger Git-Hunk |
@@ -155,6 +154,7 @@ Ghostty-Defaults (nicht überschrieben, gelten weiterhin):
 |---|---|
 | `<leader>l` | Lazy (Plugin-Manager) |
 | `<leader>cm` | Mason (LSP/Formatter) |
+| `Ctrl+s` | Speichern (alle Modi) |
 | `<leader>qq` | Alles beenden |
 | `<leader>qs` | Session wiederherstellen |
 | `<leader>uw` / `<leader>ul` | Umbruch / Zeilennummern umschalten |
@@ -162,11 +162,7 @@ Ghostty-Defaults (nicht überschrieben, gelten weiterhin):
 
 ---
 
-## Hinweise / bekannte Konflikte
+## Hinweise
 
-- **`<leader>w` / `<leader>q`**: In LazyVim sind das Gruppen-Präfixe
-  (`<leader>wd`, `<leader>qq`, …). Durch die eigenen Mappings wartet Neovim
-  kurz (timeoutlen), bevor gespeichert/geschlossen wird.
-- **`Alt+h/j/k/l`** werden von Ghostty geschluckt (siehe oben).
 - **`Ctrl+/`** (LazyVim-Terminal) ist deaktiviert – stattdessen `Ctrl+\`.
 - Kein tmux-Config vorhanden; `vim-tmux-navigator` wirkt also nur innerhalb von Neovim.
