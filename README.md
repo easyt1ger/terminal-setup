@@ -40,8 +40,8 @@ Das war's! Lazy.nvim lädt alle Plugins automatisch beim ersten Start.
 Dies installiert:
 - ✅ Neovim, Ghostty, Fish, Starship
 - ✅ Alle Dependencies (fzf, ripgrep, git, etc.)
-- ✅ LSP Server, Formatters
-- ✅ Kopiert alle Configs
+- ✅ Formatter (LSP-Server installiert später Mason automatisch)
+- ✅ Kopiert alle Configs (`nvim/`, `config.fish`, `starship.toml`, `ghostty-config`)
 
 ### Option 2: Manuell
 
@@ -51,7 +51,7 @@ brew install neovim ghostty starship fish fzf ripgrep exa tmux lazygit
 
 # Configs kopieren
 mkdir -p ~/.config/{nvim,fish,ghostty}
-cp init.lua ~/.config/nvim/
+cp -r nvim/. ~/.config/nvim/
 cp config.fish ~/.config/fish/
 cp starship.toml ~/.config/
 cp ghostty-config ~/.config/ghostty/config
@@ -76,7 +76,7 @@ paru -S ghostty
 
 # Configs
 mkdir -p ~/.config/{nvim,fish,ghostty}
-cp init.lua ~/.config/nvim/
+cp -r nvim/. ~/.config/nvim/
 cp config.fish ~/.config/fish/
 cp starship.toml ~/.config/
 cp ghostty-config ~/.config/ghostty/config
@@ -93,7 +93,7 @@ curl -sS https://starship.rs/install.sh | sh
 
 # Configs
 mkdir -p ~/.config/{nvim,fish,ghostty}
-cp init.lua ~/.config/nvim/
+cp -r nvim/. ~/.config/nvim/
 cp config.fish ~/.config/fish/
 cp starship.toml ~/.config/
 cp ghostty-config ~/.config/ghostty/config
@@ -101,21 +101,17 @@ cp ghostty-config ~/.config/ghostty/config
 chsh -s /usr/bin/fish
 ```
 
-### LSP Server installieren
+### LSP Server & Formatter
 
-Nach dem Setup, zum optionalen Installieren von LSP Servern:
+Nichts manuell nötig: Beim ersten Start von `nvim` installiert **Mason** die
+Server und Formatter der aktivierten LazyVim-Sprach-Extras
+(Python, TypeScript, Rust, JSON, YAML) plus `stylua`.
 
-```bash
-# macOS
-brew install lua-language-server pyright typescript-language-server rust-analyzer
-
-# Arch Linux
-sudo pacman -S lua-language-server rust-analyzer yaml-language-server
-npm install -g pyright typescript-language-server
-
-# Debian/Ubuntu
-npm install -g pyright typescript-language-server yaml-language-server
+```vim
+:Mason        " Status ansehen / weitere Tools installieren
 ```
+
+Voraussetzungen: `node`/`npm` und `python` sollten installiert sein.
 
 #### AUR Helper für Arch (optional)
 
@@ -139,127 +135,172 @@ makepkg -si
 
 ## ⌨️ Keybindings
 
-### Grundlagen
+> 📄 Vollständige Liste: **[KEYBINDINGS.md](KEYBINDINGS.md)**
 
-| Key | Action |
-|-----|--------|
-| `<Space>` | Leader Key |
-| `<C-h/j/k/l>` | Window Navigation |
-| `<Esc>` | Clear Search |
+`<leader>` = **Leertaste**. Die Ebenen sind getrennt:
 
-### Navigation
+| Ebene | Modifier | Wofür |
+|-------|----------|-------|
+| Ghostty | `Alt+Shift` / `Ctrl+Alt` | Tabs & Splits des Terminals |
+| Neovim | `Ctrl` / `<leader>` | Fenster, Editor-Aktionen |
+| Fish | `Ctrl` (+ fzf) | Shell-Suche, History |
 
-| Keybinding | Action |
-|-----------|--------|
-| `<leader>ff` | Find Files (Telescope) |
-| `<leader>fg` | Live Grep |
-| `<leader>fb` | Open Buffers |
-| `<leader>fh` | Help Tags |
-| `<leader>gs` | Git Status |
-| `<leader>gc` | Git Commits |
-
-### Editor
+### Ghostty
 
 | Keybinding | Action |
 |-----------|--------|
-| `<leader>w` | Save |
-| `<leader>q` | Quit |
-| `<leader>Q` | Force Quit |
-| `<leader>x` | Close Buffer |
-| `<leader>bn` | Next Buffer |
-| `<leader>bp` | Prev Buffer |
-| `<leader>bd` | Delete Buffer |
+| `Ctrl+Alt+h/j/k/l` | Split-Fokus links / unten / oben / rechts |
+| `Alt+Shift+h` / `Alt+Shift+l` | Vorheriger / nächster Tab |
+| `Alt+Shift+t` | Neuer Tab |
+| `Alt+Shift+v` | Neuer Split rechts |
+| `Alt+Shift+s` | Neuer Split unten |
+| `Ctrl+Shift+c` / `Ctrl+Shift+v` | Kopieren / Einfügen |
+| `Ctrl+Shift+,` | Config neu laden |
 
-### Terminal
+### Fish
 
 | Keybinding | Action |
 |-----------|--------|
-| `<C-\>` | Toggle Terminal |
-| `<C-h/j/k/l>` | Navigate (aus Terminal) |
-| `<Esc>` | Exit Terminal Mode |
+| `Ctrl+r` | History durchsuchen (fzf) |
+| `Ctrl+t` | Datei suchen & einfügen (fzf) |
+| `Alt+c` | Verzeichnis wechseln (fzf) |
+| `→` / `Ctrl+f` | Autosuggestion übernehmen |
+| `Alt+s` | `sudo` voranstellen |
 
-### LSP / Code
+### Neovim: Grundlagen
+
+| Keybinding | Action |
+|-----------|--------|
+| `<C-h/j/k/l>` | Fenster-Navigation (auch aus dem Terminal) |
+| `<C-s>` | Speichern |
+| `<leader>qq` | Alles beenden |
+| `<leader>Q` | Schließen ohne Speichern |
+| `<leader>` (warten) | which-key zeigt alle Optionen |
+
+### Neovim: Dateien & Suche
+
+| Keybinding | Action |
+|-----------|--------|
+| `<leader><leader>` / `<leader>ff` | Dateien finden |
+| `<leader>/` / `<leader>sg` | Grep im Projekt |
+| `<leader>,` / `<leader>fb` | Buffer wählen |
+| `<leader>fr` | Zuletzt geöffnet |
+| `<leader>e` / `<C-n>` | Datei-Explorer |
+| `<leader>sr` | Suchen & Ersetzen |
+| `<leader>sk` | Keymaps durchsuchen |
+
+### Neovim: Buffer & Fenster
+
+| Keybinding | Action |
+|-----------|--------|
+| `<S-h>` / `<S-l>` | Vorheriger / nächster Buffer |
+| `<leader>bb` | Zum letzten Buffer |
+| `<leader>bd` | Buffer schließen |
+| `<leader>-` / `<leader>\|` | Split unten / rechts |
+| `<A-j>` / `<A-k>` | Zeile verschieben |
+
+### Neovim: Terminal
+
+| Keybinding | Action |
+|-----------|--------|
+| `<C-\>` | Floating Terminal ein/aus |
+| `<C-h/j/k/l>` | Aus dem Terminal in andere Fenster |
+
+### Neovim: LSP / Code
 
 | Keybinding | Action |
 |-----------|--------|
 | `gd` | Go to Definition |
 | `gD` | Go to Declaration |
-| `gi` | Go to Implementation |
-| `go` | Go to Type Definition |
+| `gI` | Go to Implementation |
+| `gy` | Go to Type Definition |
 | `gr` | References |
 | `K` | Hover |
-| `<leader>rn` | Rename |
+| `<leader>cr` | Rename |
 | `<leader>ca` | Code Action |
-| `<leader>dl` | Diagnostics |
+| `<leader>cf` | Format |
+| `<leader>cd` | Line Diagnostics |
+| `<leader>xx` | Diagnostics-Liste (Trouble) |
+| `]d` / `[d` | Nächste / vorherige Diagnose |
 
-### Git Integration
+### Neovim: Git
 
 | Keybinding | Action |
 |-----------|--------|
-| `]c` | Next Hunk |
-| `[c` | Prev Hunk |
-| `<leader>hs` | Stage Hunk |
-| `<leader>hr` | Reset Hunk |
-| `<leader>hp` | Preview Hunk |
-| `<leader>hb` | Blame Line |
-| `<leader>tb` | Toggle Blame |
-| `<leader>hd` | Diff This |
 | `<leader>gg` | Lazygit |
+| `<leader>gs` | Git Status |
+| `<leader>gl` | Git Log |
+| `]h` / `[h` | Nächster / vorheriger Hunk |
+| `<leader>ghs` | Stage Hunk |
+| `<leader>ghr` | Reset Hunk |
+| `<leader>ghp` | Preview Hunk |
+| `<leader>ghb` | Blame Line |
+| `<leader>ghd` | Diff This |
 
-### Formatieren
+### Neovim: Pi Agentic Coding
 
 | Keybinding | Action |
 |-----------|--------|
-| `<leader>mp` | Format Document |
-
-### Markdown Preview
-| Keybinding | Action |
-|-----------|--------|
-| `<leader>md` | Markdown Preview Toggle |
-
-### Pi Agentic Coding
-| Keybinding | Action |
-|-----------|--------|
-| `<leader>ai` | Ask Pi (current buffer/selection as context) |
+| `<leader>ai` | Ask Pi (aktueller Buffer/Auswahl als Kontext) |
 
 ---
 
 ## 🔌 Plugins Übersicht
 
-### UI & Navigation
-- **lualine** - Status Bar
-- **nvim-tree** - File Explorer
-- **telescope** - Fuzzy Finder
-- **dashboard** - Start Screen
-- **kanagawa** - Farben Theme (Dragon Variant)
+Basis ist **[LazyVim](https://www.lazyvim.org)**, verwaltet über `lazy.nvim`.
 
-### Editor Features
-- **nvim-surround** - Umgeben/Ändern (z.B., `cs"'`)
-- **nvim-autopairs** - Auto Klammern
-- **Comment.nvim** - Comment Toggle
-- **indent-blankline** - Indent Guides
-- **nvim-treesitter** - Syntax Highlighting
+### Config-Struktur
+
+```
+nvim/
+├── init.lua                  # lädt config.lazy
+└── lua/
+    ├── config/
+    │   ├── lazy.lua          # lazy.nvim + LazyVim + Sprach-Extras
+    │   ├── options.lua       # eigene Optionen (4 Spaces, Diagnose-Float …)
+    │   └── keymaps.lua       # eigene Keymaps
+    └── plugins/
+        ├── colorscheme.lua   # Kanagawa Dragon
+        ├── lsp.lua           # lua_ls, stylua, conform
+        ├── tools.lua         # vim-tmux-navigator, pi.nvim
+        └── ui.lua            # lualine, toggleterm, snacks-Overrides
+```
+
+### UI & Navigation
+- **snacks.nvim** – Picker (Dateien, Grep, Buffer), Explorer, Dashboard, Notifications
+- **lualine** – Statusleiste (Kanagawa-Theme, global)
+- **bufferline** – Buffer-Tabs
+- **which-key** – Zeigt verfügbare Tastenkombinationen
+- **noice** – Moderne Cmdline & Messages
+- **kanagawa** – Farbschema (Dragon)
+
+### Editor
+- **flash.nvim** – Schnell springen (`s`)
+- **mini.pairs** – Auto-Klammern
+- **mini.ai** – Erweiterte Textobjekte
+- **ts-comments** – Kommentieren (`gcc`)
+- **nvim-treesitter** – Syntax Highlighting
+- **grug-far** – Suchen & Ersetzen im Projekt
+- **todo-comments** – TODO/FIXME hervorheben
+- **persistence** – Sessions
 
 ### Code & LSP
-- **lsp-zero** - LSP Setup
-- **nvim-lspconfig** - LSP Konfiguration
-- **nvim-cmp** - Autocomplete
-- **LuaSnip** - Snippets
-- **conform** - Formatierung
-- **nvim-lint** - Linting
+- **nvim-lspconfig** + **mason** – LSP-Server
+- **blink.cmp** – Autocomplete
+- **friendly-snippets** – Snippets
+- **conform** – Formatierung (Format on Save)
+- **nvim-lint** – Linting
+- **trouble** – Diagnose-Liste
+- **Sprach-Extras:** Python (venv-selector), TypeScript, Rust (rustaceanvim, crates), JSON/YAML (SchemaStore)
 
-### Git Integration
-- **gitsigns** - Git Signs (Changed Lines)
-- **telescope** - Git Integration
+### Git
+- **gitsigns** – Änderungen in der Sign-Column, Hunk-Aktionen
+- **lazygit** – über toggleterm (`<leader>gg`)
 
-### Terminal & Tmux
-- **toggleterm** - Terminal Inside Nvim
-- **vim-tmux-navigator** - Tmux Navigation
-
-### Produktivität
-- **markdown-preview** - Markdown Preview
-- **pi.nvim** - Agentic Coding (Pi Agent Integration)
-- **vim-tmux-navigator** - Nahtlose Navigation
+### Terminal & Tools
+- **toggleterm** – Floating Terminal (`<C-\>`) und Lazygit
+- **vim-tmux-navigator** – Nahtlose Navigation Nvim ↔ tmux
+- **pi.nvim** – Agentic Coding (Pi Agent Integration)
 
 ---
 
@@ -290,28 +331,29 @@ Dies öffnet dein Projekt und startet nvim.
 ```bash
 <leader>gs     # Git Status
 <leader>gg     # Lazygit (Full UI)
-<leader>gc     # Git Commits (Telescope)
+<leader>gl     # Git Log
 ```
 
 ### 4. Schnelle Navigation
 
 ```bash
 <leader>ff     # Datei suchen
-<leader>fg     # Text überall suchen
+<leader>/      # Text überall suchen
 ```
 
 ### 5. Split Fenster Workflow
 
 ```bash
-<C-h/j/k/l>   # Zwischen Fenstern navigieren
-:split         # Horizontal split
-:vsplit        # Vertikal split
+<C-h/j/k/l>        # Zwischen Nvim-Fenstern navigieren
+<leader>-          # Split unten
+<leader>|          # Split rechts
+Ctrl+Alt+h/j/k/l   # Zwischen Ghostty-Splits navigieren
 ```
 
 ### 6. Formatierung & Linting
 
 ```
-<leader>mp    # Format
+<leader>cf    # Format
 ```
 
 Auto-Format on Save ist eingebaut! Linting läuft automatisch.
@@ -321,7 +363,7 @@ Auto-Format on Save ist eingebaut! Linting läuft automatisch.
 ```
 gd     # Zur Definition springen
 K      # Dokumentation anschauen
-<leader>rn   # Variable umbenennen
+<leader>cr   # Variable umbenennen
 ```
 
 ### 8. Schnelle Notizen
@@ -373,32 +415,16 @@ pi "Your prompt here"  # Schnell-Mode
 
 ---
 
-## 📊 Empfohlene LSP Server
+## 📊 Weitere Sprachen hinzufügen
 
-### Python
-```bash
-pip install pyright
+Weitere Sprachen über LazyVim-Extras in `nvim/lua/config/lazy.lua` aktivieren,
+z. B. Go:
+
+```lua
+{ import = "lazyvim.plugins.extras.lang.go" },
 ```
 
-### JavaScript/TypeScript
-```bash
-npm install -g typescript-language-server
-```
-
-### Rust
-```bash
-rustup component add rust-analyzer
-```
-
-### Go
-```bash
-go install github.com/golang/tools/gopls@latest
-```
-
-### YAML
-```bash
-npm install -g yaml-language-server
-```
+Oder interaktiv: `:LazyExtras` in nvim. Mason installiert die nötigen Tools dann automatisch.
 
 ---
 
@@ -420,10 +446,9 @@ npm install -g yaml-language-server
 ```
 
 **Wenn Server nicht connected:**
-```bash
-# Stelle sicher, dass LSP installiert ist:
-which pyright
-npm list -g typescript-language-server
+```vim
+:Mason          " Ist der Server installiert?
+:checkhealth    " Allgemeine Diagnose
 ```
 
 ### Problem: Fish als Default Shell funktioniert nicht
@@ -436,13 +461,17 @@ chsh -s /opt/homebrew/bin/fish
 chsh -s /usr/bin/fish
 ```
 
-### Problem: Ghostty öffnet nicht
+### Problem: Ghostty öffnet nicht / Config-Fehler
 
 ```bash
 # macOS mit Homebrew
 brew install ghostty
 
-# Linux: Von GitHub bauen oder Distro-Package nutzen
+# Arch (AUR)
+paru -S ghostty
+
+# Config prüfen
+ghostty +validate-config
 ```
 
 ### Problem: Starship Prompt wird nicht angezeigt
@@ -466,15 +495,6 @@ starship init fish | source
 echo "🌈 Colors: $(tput colors) colors"
 ```
 
-### Terminal Flackern oder Lag
-
-**In Ghostty config:**
-```ini
-graphics-protocol = kitty
-# oder
-graphics-protocol = sixel
-```
-
 ### Fzf funktioniert nicht
 
 ```bash
@@ -482,7 +502,8 @@ graphics-protocol = sixel
 which fzf
 
 # Wenn nicht:
-brew install fzf
+brew install fzf        # macOS
+sudo pacman -S fzf      # Arch
 
 # Dann in Fish config:
 fzf --fish | source
@@ -496,28 +517,26 @@ fzf --fish | source
 
 Das Setup verwendet **Kanagawa Dragon** - ein wunderschönes modernes Theme.
 
-**Varianten wechseln** in `~/.config/nvim/init.lua`:
+**Varianten wechseln** in `nvim/lua/plugins/colorscheme.lua`:
 
 ```lua
-require("kanagawa").setup({
-    theme = "dragon",    -- Aktuelle: dunkel, warm
-    -- "wave"            -- Alternative: dunkel, kühl
-    -- "lotus"           -- Alternative: hell, minimalistisch
-})
-vim.cmd.colorscheme("kanagawa")
+{
+    "rebelot/kanagawa.nvim",
+    opts = {
+        theme = "dragon",    -- Aktuell: dunkel, warm
+        -- "wave"            -- Alternative: dunkel, kühl
+        -- "lotus"           -- Alternative: hell
+    },
+},
 ```
 
-**Zu anderem Theme wechseln:**
+**Zu anderem Theme wechseln** (gleiche Datei):
 
 ```lua
--- Im init.lua Color Scheme section:
--- "tokyonight"
--- "nord"
--- "gruvbox"
--- "dracula"
-
-vim.cmd.colorscheme("kanagawa")
+{ "LazyVim/LazyVim", opts = { colorscheme = "tokyonight" } },
 ```
+
+Mitgeliefert sind `kanagawa`, `tokyonight` und `catppuccin`; andere Themes als Plugin ergänzen.
 
 ### Starship Prompt anpassen
 
@@ -560,21 +579,23 @@ export GEMINI_API_KEY="..."
 # Oder: pi /login (für Claude Pro/ChatGPT Plus)
 ```
 
-**Pi Provider ändern in Nvim:**
+**pi.nvim konfigurieren** in `nvim/lua/plugins/tools.lua`
+(Optionen siehe [pi.nvim README](https://github.com/pablopunk/pi.nvim)):
 
 ```lua
--- In ~/.config/nvim/init.lua:
-require("pi").setup({
-    provider = "anthropic",  -- oder "openai", "gemini"
-    model = "claude-opus",   -- oder "gpt-4", etc.
-})
+{
+    "pablopunk/pi.nvim",
+    config = function()
+        require("pi").setup({})
+    end,
+},
 ```
 
-**Fish Shortcut für Pi:**
+**Fish-Funktionen für Pi** (in `config.fish` enthalten):
 
 ```fish
-alias pi-ask "pi --prompt"
-alias pi-edit "pi --edit"
+pi-ask "Erkläre mir diesen Fehler"
+pi-file main.py "Refactor diese Datei"
 ```
 
 ---
@@ -583,7 +604,7 @@ alias pi-edit "pi --edit"
 
 - Nvim Docs: `:help nvim`
 - Treesitter: https://github.com/nvim-treesitter
-- Telescope: https://github.com/nvim-telescope/telescope.nvim
+- LazyVim Keymaps: https://www.lazyvim.org/keymaps
 - Fish Shell: https://fishshell.com
 - Starship: https://starship.rs
 - Ghostty: https://ghostty.org
@@ -607,7 +628,7 @@ alias pi-edit "pi --edit"
 Falls Probleme auftreten:
 
 1. Check `:LspInfo` und `:Lazy` in nvim
-2. Logs anschauen: `~/.config/nvim/logs/`
+2. Diagnose: `:checkhealth`, Logs unter `~/.local/state/nvim/`
 3. Configs checken: `~/.config/{nvim,fish,ghostty}`
 4. Neovim + Plugin Repos auf GitHub durchsuchen
 
