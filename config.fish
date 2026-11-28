@@ -222,6 +222,7 @@ function fish_greeting
     # Disable default greeting (Starship handles prompt)
 end
 
+# THEME-BEGIN (unter Omarchy ausgelassen)
 # ==================== COLORS & THEME ====================
 # Kanagawa Dragon colors for Fish syntax highlighting
 set fish_color_autosuggestion 595959
@@ -234,6 +235,7 @@ set fish_color_param 7e9cd8
 set fish_color_quote c8c093
 set fish_color_redirection 7e9cd8
 set fish_color_search_match --background=2b2d2e
+# THEME-END
 
 # ==================== STARTUP CHECKS ====================
 # Warn if common tools missing

@@ -72,7 +72,27 @@ case "${OS}" in
         ;;
 esac
 
+# Omarchy (Arch-basiert, verwaltet Themes und Terminal-Konfiguration selbst) erkennen
+IS_OMARCHY=0
+if [ "$OS_TYPE" = "linux" ]; then
+    if [ -d "$HOME/.local/share/omarchy" ] || [ -d /usr/share/omarchy ] \
+        || grep -qi omarchy /etc/os-release 2>/dev/null; then
+        IS_OMARCHY=1
+        LINUX_DISTRO="arch"
+    fi
+fi
+
+# Unter Omarchy kein "pacman -Syu": Updates laufen über Omarchys eigenes Update
+# (inklusive Snapshot). Vorher "omarchy-update" ausführen.
+PACMAN_FLAGS="-Syu"
+if [ "$IS_OMARCHY" = 1 ]; then
+    PACMAN_FLAGS="-S"
+fi
+
 log_info "Detected OS: ${OS_TYPE}"
+if [ "$IS_OMARCHY" = 1 ]; then
+    log_info "Omarchy erkannt: Theme wird nicht angefasst, Login-Shell bleibt bash"
+fi
 if [ "$OS_TYPE" = "linux" ]; then
     log_info "Detected Linux distro: ${LINUX_DISTRO}"
 fi
@@ -126,7 +146,7 @@ install_dependencies() {
     elif [ "$LINUX_DISTRO" = "arch" ]; then
         # Arch Linux with pacman
         # -Syu: System aktualisieren + installieren, --needed: Vorhandenes überspringen
-        sudo pacman -Syu --needed --noconfirm \
+        sudo pacman $PACMAN_FLAGS --needed --noconfirm \
             neovim \
             fish \
             git \
@@ -181,28 +201,58 @@ create_directories() {
 }
 
 # ==================== COPY CONFIG FILES ====================
+# Theme-Teile sind in den Configs mit THEME-BEGIN/THEME-END markiert und werden
+# unter Omarchy ausgelassen (Omarchy verwaltet Themes selbst).
+strip_theme() {
+    sed '/THEME-BEGIN/,/THEME-END/d' "$1"
+}
+
+backup_configs() {
+    [ "$IS_OMARCHY" = 1 ] || return 0
+    BACKUP_DIR="$HOME/.config/terminal-setup-backup-$(date +%Y%m%d-%H%M%S)"
+    log_info "Omarchy: sichere bestehende Configs nach $BACKUP_DIR"
+    mkdir -p "$BACKUP_DIR"
+    [ -d ~/.config/nvim ] && cp -r ~/.config/nvim "$BACKUP_DIR/nvim"
+    [ -d ~/.config/ghostty ] && cp -r ~/.config/ghostty "$BACKUP_DIR/ghostty"
+    [ -f ~/.config/starship.toml ] && cp ~/.config/starship.toml "$BACKUP_DIR/"
+    [ -f ~/.config/fish/config.fish ] && cp ~/.config/fish/config.fish "$BACKUP_DIR/"
+    return 0
+}
+
 copy_configs() {
     log_info "Copying configuration files..."
-    
+
     # Script directory
     SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-    
+
     # Nvim (LazyVim-basierte Verzeichnisstruktur)
     if [ -d "$SCRIPT_DIR/nvim" ]; then
-        cp -r "$SCRIPT_DIR/nvim/." ~/.config/nvim/
-        log_success "Nvim config installed (LazyVim)"
+        if [ "$IS_OMARCHY" = 1 ]; then
+            # Mit Omarchys vorhandener Config zusammenführen, Theme-Datei auslassen
+            (cd "$SCRIPT_DIR/nvim" && tar cf - --exclude='lua/plugins/colorscheme.lua' .) \
+                | tar xf - -C ~/.config/nvim
+            log_success "Nvim config merged (ohne Theme)"
+        else
+            cp -r "$SCRIPT_DIR/nvim/." ~/.config/nvim/
+            log_success "Nvim config installed (LazyVim)"
+        fi
     else
         log_warning "nvim/ directory not found in script directory"
     fi
-    
+
     # Fish
     if [ -f "$SCRIPT_DIR/config.fish" ]; then
-        cp "$SCRIPT_DIR/config.fish" ~/.config/fish/
-        log_success "Fish config installed"
+        if [ "$IS_OMARCHY" = 1 ]; then
+            strip_theme "$SCRIPT_DIR/config.fish" > ~/.config/fish/config.fish
+            log_success "Fish config installed (ohne Theme)"
+        else
+            cp "$SCRIPT_DIR/config.fish" ~/.config/fish/
+            log_success "Fish config installed"
+        fi
     else
         log_warning "config.fish not found in script directory"
     fi
-    
+
     # Starship
     if [ -f "$SCRIPT_DIR/starship.toml" ]; then
         cp "$SCRIPT_DIR/starship.toml" ~/.config/starship.toml
@@ -210,11 +260,27 @@ copy_configs() {
     else
         log_warning "starship.toml not found in script directory"
     fi
-    
+
     # Ghostty
     if [ -f "$SCRIPT_DIR/ghostty-config" ]; then
-        cp "$SCRIPT_DIR/ghostty-config" ~/.config/ghostty/config
-        log_success "Ghostty config installed"
+        if [ "$IS_OMARCHY" = 1 ]; then
+            # Omarchys Config bleibt bestehen; eigene Einstellungen kommen als
+            # markierter Block ans Ende (später gesetzte Werte gewinnen).
+            GHOSTTY_CFG=~/.config/ghostty/config
+            BLOCK_START="# >>> terminal-setup >>>"
+            BLOCK_END="# <<< terminal-setup <<<"
+            touch "$GHOSTTY_CFG"
+            sed -i "/$BLOCK_START/,/$BLOCK_END/d" "$GHOSTTY_CFG"
+            {
+                echo "$BLOCK_START"
+                strip_theme "$SCRIPT_DIR/ghostty-config" | grep -v '^macos-'
+                echo "$BLOCK_END"
+            } >> "$GHOSTTY_CFG"
+            log_success "Ghostty config als Block ergänzt (ohne Theme)"
+        else
+            cp "$SCRIPT_DIR/ghostty-config" ~/.config/ghostty/config
+            log_success "Ghostty config installed"
+        fi
     else
         log_warning "ghostty-config not found in script directory"
     fi
@@ -222,6 +288,11 @@ copy_configs() {
 
 # ==================== SET SHELL ====================
 set_shell() {
+    if [ "$IS_OMARCHY" = 1 ]; then
+        log_info "Omarchy: bash bleibt Login-Shell, fish startet über Ghostty (command = /usr/bin/fish)"
+        return 0
+    fi
+
     log_info "Setting Fish as default shell..."
     
     FISH_PATH="$(command -v fish || true)"
@@ -321,6 +392,13 @@ print_summary() {
     echo "  • gcl = Git clone and enter"
     echo "  • note = Quick notes"
     echo ""
+    if [ "$IS_OMARCHY" = 1 ]; then
+        echo "Omarchy-Hinweise:"
+        echo "  • Theme wurde nicht angefasst (Farben kommen von Omarchy)"
+        echo "  • Alte Configs liegen in ~/.config/terminal-setup-backup-*"
+        echo "  • Ghostty-Binds gegen Hyprland-Binds (~/.config/hypr/) prüfen"
+        echo ""
+    fi
     echo "Troubleshooting:"
     echo "  • If plugins don't load: :Lazy sync in nvim"
     echo "  • If LSP doesn't work: :LspInfo / :Mason in nvim"
@@ -335,6 +413,7 @@ main() {
     
     install_package_manager
     install_dependencies
+    backup_configs
     create_directories
     copy_configs
     set_shell

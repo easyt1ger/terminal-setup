@@ -2,6 +2,7 @@
 # ~/.config/ghostty/config
 
 # ==================== APPEARANCE ====================
+# THEME-BEGIN (unter Omarchy ausgelassen, dort steuert Omarchy die Farben)
 # Kanagawa Dragon theme
 background = 181819
 foreground = dcd7ba
@@ -23,6 +24,7 @@ palette = 12=#7ea8fd
 palette = 13=#938aa9
 palette = 14=#7fb4ca
 palette = 15=#f2ccff
+# THEME-END
 
 # Cursor
 cursor-style = block

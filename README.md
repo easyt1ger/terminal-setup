@@ -124,6 +124,19 @@ makepkg -si
 
 ---
 
+### Omarchy
+
+`setup.sh` erkennt Omarchy automatisch und ändert dann sein Verhalten:
+
+- Login-Shell bleibt bash, fish startet über Ghostty (`command = /usr/bin/fish`)
+- Kein `pacman -Syu` (vorher `omarchy-update` ausführen)
+- Bestehende Configs werden nach `~/.config/terminal-setup-backup-<Zeit>` gesichert
+- Ghostty: eigene Einstellungen werden als Block an Omarchys Config angehängt, nicht überschrieben
+- Neovim: wird mit Omarchys Config zusammengeführt
+- Theme (Kanagawa) wird ausgelassen: Marker `THEME-BEGIN`/`THEME-END` in `ghostty-config` und `config.fish`, außerdem `nvim/lua/plugins/colorscheme.lua`
+
+---
+
 ## ⌨️ Keybindings
 
 > 📄 Vollständige Liste: **[KEYBINDINGS.md](KEYBINDINGS.md)**
